@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
 import '../models/doctor.dart';
+import '../utils/app_constant.dart';
 
 class HomeScreenDoctorCard extends StatelessWidget {
   final Doctor doctor;
@@ -23,9 +25,19 @@ class HomeScreenDoctorCard extends StatelessWidget {
             width: 90,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
-              image: DecorationImage(
-                image: AssetImage("assets/images/doctor_placeholder.jpg"),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: CachedNetworkImage(
+                imageUrl: doctor.image != ""
+                    ? "${AppConstant.ImageDomain}/${doctor.image}"
+                    : "${AppConstant.ImageDomain}/doctor-fallback.jpg",
                 fit: BoxFit.cover,
+                placeholder: (context, url) => Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) =>
+                    Icon(Icons.error, color: Colors.red),
               ),
             ),
           ),
@@ -37,7 +49,7 @@ class HomeScreenDoctorCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "${doctor.name}",
+                  "${doctor.honorific} ${doctor.name}",
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -46,7 +58,7 @@ class HomeScreenDoctorCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "${doctor.department} • ${doctor.experience}+ Years",
+                  "${doctor.department} • ${doctor.experienceCount}+ Years",
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -100,7 +112,7 @@ class HomeScreenDoctorCard extends StatelessWidget {
                         children: [
                           Image.asset("assets/images/ruppe_icon.png"),
                           Text(
-                            "${doctor.fee}",
+                            "${doctor.appointmentPrice}",
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
@@ -109,7 +121,33 @@ class HomeScreenDoctorCard extends StatelessWidget {
                           )
                         ],
                       ),
-                    )
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Container(
+                      height: 25,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 4.0),
+                      decoration: BoxDecoration(
+                        color: doctor.isAvailableToday
+                            ? Color.fromRGBO(228, 255, 223, 1)
+                            : Color.fromRGBO(255, 216, 216, 1),
+                        borderRadius: BorderRadius.circular(14.0),
+                      ),
+                      child: Text(
+                        doctor.isAvailableToday
+                            ? "Available Today"
+                            : "Not Available Today",
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          color: doctor.isAvailableToday
+                              ? Color.fromRGBO(27, 191, 0, 1)
+                              : Color.fromRGBO(255, 0, 0, 1),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],

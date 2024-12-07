@@ -8,6 +8,7 @@ import './bottom_navigation_bar.dart';
 import '../controllers/payment_controller.dart';
 import '../models/payment.dart';
 import '../widgets/payment_card.dart';
+import '../utils/routes.dart';
 
 class PaymentsScreen extends StatefulWidget {
   const PaymentsScreen({super.key});
@@ -35,83 +36,87 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        leading: GestureDetector(
-          child: Icon(Icons.arrow_back, color: Colors.black),
-          onTap: () {
-            Get.back();
-          },
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "My Profile",
-              style: GoogleFonts.poppins(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            SizedBox(height: 4),
-            Obx(() {
-              return Text(
-                "You have ${controller.paymentList.length} payments",
-                style: GoogleFonts.poppins(
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                ),
-              );
-            })
-          ],
-        ),
-        centerTitle: false,
-      ),
-      bottomNavigationBar: BottomNavBar(
-        selectedIndex: AppRoutes.routesIndex[AppRoutes.profileRoute] as int,
-      ),
-      body: Container(
-        color: AppColors.doctorScreenBackgroudColor,
-        child: SingleChildScrollView(
-          child: Column(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: GestureDetector(
+            child: Icon(Icons.arrow_back, color: Colors.black),
+            onTap: () {
+              Get.offNamed(AppRoutes.profileRoute);
+            },
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              Text(
+                "My Profile",
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 4),
               Obx(() {
-                if (controller.isLoading.value) {
-                  print("Loading Payments...");
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
-                  );
-                }
-                return Container(
-                  padding: EdgeInsets.all(16),
-                  width: double.infinity,
-                  color: Colors.white,
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    physics:
-                        NeverScrollableScrollPhysics(), // Disable inner scrolling
-                    itemCount: controller.paymentList.length,
-                    itemBuilder: (context, index) {
-                      PaymentData paymentData = controller.paymentList[index];
-                      return PaymentCard(paymentData: paymentData);
-                    },
-                    separatorBuilder: (context, index) => SizedBox(
-                      height: 20,
-                    ),
+                return Text(
+                  "You have ${controller.paymentList.length} payments",
+                  style: GoogleFonts.poppins(
+                    color: Color.fromRGBO(0, 0, 0, 0.6),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
                   ),
                 );
-              }),
+              })
             ],
           ),
+          centerTitle: false,
         ),
-      ),
-    );
+        bottomNavigationBar: BottomNavBar(
+          selectedIndex: AppRoutes.routesIndex[AppRoutes.profileRoute] as int,
+        ),
+        body: Obx(
+          () => Container(
+            color: controller.isLoading.value
+                ? Colors.white
+                : AppColors.doctorScreenBackgroudColor,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  Obx(() {
+                    if (controller.isLoading.value) {
+                      print("Loading Payments...");
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      );
+                    }
+                    return Container(
+                      padding: EdgeInsets.all(16),
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics:
+                            NeverScrollableScrollPhysics(), // Disable inner scrolling
+                        itemCount: controller.paymentList.length,
+                        itemBuilder: (context, index) {
+                          PaymentData paymentData =
+                              controller.paymentList[index];
+                          return PaymentCard(paymentData: paymentData);
+                        },
+                        separatorBuilder: (context, index) => SizedBox(
+                          height: 20,
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }

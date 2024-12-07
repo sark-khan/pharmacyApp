@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
 
 class ReviewOfPatient extends StatelessWidget {
-  const ReviewOfPatient({super.key});
-  final int rating = 3;
+  final Map<String, dynamic> data;
+  ReviewOfPatient({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class ReviewOfPatient extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: List.generate(rating, (index) {
+            children: List.generate(data["rating"] ?? 1, (index) {
               return Image.asset(
                 'assets/images/star_icon.png', // Replace with your filled star asset path
                 width: 24,
@@ -28,13 +28,21 @@ class ReviewOfPatient extends StatelessWidget {
             }),
           ),
           SizedBox(height: 16),
-          Text(
-            "Such31 31431234 423242423142314231432142134321414341324M43324 1 432142134is album is still my favorite.",
-            style: TextStyle(fontSize: 14),
+          Expanded(
+            flex: 10,
+            child: SingleChildScrollView(
+              child: Text(
+                maxLines: 10,
+                data['comment'] ?? '',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                ),
+              ),
+            ),
           ),
           Spacer(),
           Text(
-            'Rahul Verma',
+            data["user"]?["fullName"] ?? "",
             style: GoogleFonts.poppins(
               textStyle: TextStyle(
                 fontSize: 14,

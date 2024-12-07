@@ -16,17 +16,16 @@ class AppointmentCard extends StatelessWidget {
   }
 
   Color getStatusBackGroundColor(String status) {
-    print(appointmentData.appointmentDate);
-    if (status == "Completed") return Color(0xFFD4FFCD);
-    if (status == "Scheduled") return Color(0xFFFFF9C5);
-    if (status == "Cancelled") return Color(0xFFFFD8D8);
+    if (status == "completed") return Color(0xFFD4FFCD);
+    if (status == "scheduled") return Color(0xFFFFF9C5);
+    if (status == "canceled") return Color(0xFFFFD8D8);
     return Colors.amber;
   }
 
   Color getStatusColor(String status) {
-    if (status == "Completed") return Color(0xFF1BBF00);
-    if (status == "Scheduled") return Color(0xFFFFC700);
-    if (status == "Cancelled") return Color(0xFFFF0000);
+    if (status == "completed") return Color(0xFF1BBF00);
+    if (status == "scheduled") return Color(0xFFFFC700);
+    if (status == "canceled") return Color(0xFFFF0000);
     return Colors.amber;
   }
 
@@ -52,7 +51,7 @@ class AppointmentCard extends StatelessWidget {
                     color: Colors.white),
                 child: Center(
                   child: Text(
-                    appointmentData.appointmentId,
+                    appointmentData.qpId,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w500,
@@ -119,7 +118,7 @@ class AppointmentCard extends StatelessWidget {
                       ),
                     )),
                 TextSpan(
-                  text: getFormattedDate(appointmentData.appointmentDate),
+                  text: getFormattedDate(appointmentData.dateTime),
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                         fontWeight: FontWeight.w400,
@@ -144,7 +143,7 @@ class AppointmentCard extends StatelessWidget {
                       ),
                     )),
                 TextSpan(
-                    text: appointmentData.patientName,
+                    text: appointmentData.patient,
                     style: GoogleFonts.poppins(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -154,81 +153,154 @@ class AppointmentCard extends StatelessWidget {
               ],
             ),
           ),
-          appointmentData.status == "Scheduled"
+          appointmentData.status == "canceled"
               ? SizedBox(
                   height: 10,
                 )
               : SizedBox(),
-          appointmentData.status == "Scheduled"
-              ? Container(
-                  height: 30,
-                  child: Row(
+          appointmentData.status == "canceled"
+              ? Text.rich(
+                  TextSpan(
                     children: [
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                color: Color.fromRGBO(255, 199, 0, 0.2)),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                    "assets/images/reschedule_icon.png"),
-                                SizedBox(
-                                  width: 4,
-                                ),
-                                Text(
-                                  "Reschedule",
-                                  style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color:
-                                              Color.fromRGBO(242, 116, 0, 1))),
-                                ),
-                              ],
-                            ) // Add content here
+                      TextSpan(
+                          text: "Refund Status : ",
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              color: AppColors.textDarkBlack,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
                             ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                color: Color.fromRGBO(255, 50, 50, 1)),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset("assets/images/cancel_icon.png"),
-                                SizedBox(
-                                  width: 4,
-                                ),
-                                Text(
-                                  "Cancel",
-                                  style: GoogleFonts.poppins(
-                                      textStyle: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color.fromRGBO(
-                                              255, 243, 243, 1))),
-                                ),
-                              ],
-                            ) // Add content here
-                            ),
-                      ),
+                          )),
+                      TextSpan(
+                          text: appointmentData.refundStatus,
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                color: AppColors.textLightBlack),
+                          )),
                     ],
                   ),
                 )
+              : SizedBox(),
+          appointmentData.status == "scheduled"
+              ? SizedBox(
+                  height: 10,
+                )
+              : SizedBox(),
+          appointmentData.status == "scheduled"
+              ? appointmentData.isRescheduled == true
+                  ? Container(
+                      height: 30,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12)),
+                                    color: Color.fromRGBO(255, 50, 50, 1)),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                        "assets/images/cancel_icon.png"),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      "Cancel",
+                                      style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color.fromRGBO(
+                                                  255, 243, 243, 1))),
+                                    ),
+                                  ],
+                                ) // Add content here
+                                ),
+                          ),
+                          Expanded(
+                            child: SizedBox(),
+                            flex: 1,
+                          )
+                        ],
+                      ),
+                    )
+                  : Container(
+                      height: 30,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12)),
+                                    color: Color.fromRGBO(255, 199, 0, 0.2)),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                        "assets/images/reschedule_icon.png"),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      "Reschedule",
+                                      style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color.fromRGBO(
+                                                  242, 116, 0, 1))),
+                                    ),
+                                  ],
+                                ) // Add content here
+                                ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12)),
+                                    color: Color.fromRGBO(255, 50, 50, 1)),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                        "assets/images/cancel_icon.png"),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      "Cancel",
+                                      style: GoogleFonts.poppins(
+                                          textStyle: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color.fromRGBO(
+                                                  255, 243, 243, 1))),
+                                    ),
+                                  ],
+                                ) // Add content here
+                                ),
+                          ),
+                        ],
+                      ),
+                    )
               : SizedBox()
         ],
       ),

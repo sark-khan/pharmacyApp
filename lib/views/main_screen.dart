@@ -5,6 +5,7 @@ import 'doctor_screen.dart';
 import 'hospital_screen.dart';
 import 'profile_screen.dart';
 import '../utils/colors.dart'; // Make sure to import your AppColors utility
+import '../utils/helper_class.dart';
 
 class MainScreen extends StatefulWidget {
   @override

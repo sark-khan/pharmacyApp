@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controllers/hostpital_detaill_screen.dart';
 import 'home_screen.dart';
 import 'doctor_screen.dart';
 import 'hospital_screen.dart';
 import 'profile_screen.dart';
 import '../utils/colors.dart'; // Make sure to import your AppColors utility
 import '../utils/routes.dart';
+import '../controllers/bottom_filter_controller.dart';
+import '../utils/auth_helper.dart';
+import '../controllers/payment_controller.dart';
+import '../controllers/appoinment_controller.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -14,9 +19,39 @@ class BottomNavBar extends StatelessWidget {
     required this.selectedIndex,
   });
   void _onItemTapped(int index) {
-    print(index);
-    print(AppRoutes.routesArray[index]);
-    Get.offNamed(AppRoutes.routesArray[index]);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Get.isRegistered<FiltersController>(tag: "DoctorScreen")) {
+        Get.delete<FiltersController>(tag: "DoctorScreen");
+      }
+      if (Get.isRegistered<FiltersController>(tag: "HospitalScreen")) {
+        Get.delete<FiltersController>(tag: "HospitalScreen");
+      }
+      if (Get.isRegistered<PaymentController>(tag: "PaymentScreen")) {
+        Get.delete<PaymentController>(tag: "PaymentScreen");
+      }
+      if (Get.isRegistered<AppoinmentController>(tag: "AppoinmentScreen")) {
+        Get.delete<AppoinmentController>(tag: "AppoinmentScreen");
+      }
+      if (AppRoutes.routesArray[index] != AppRoutes.HospitalsRoute) {
+        if (Get.isRegistered<HospitalDetailsController>(
+            tag: "HospitalDetailScreen")) {
+          Get.delete<HospitalDetailsController>(tag: "HospitalDetailScreen");
+        }
+      }
+
+      if (AppRoutes.routesArray[index] == AppRoutes.profileRoute) {
+        var token = AuthHelper.getToken();
+
+        if (token == null || token.isEmpty) {
+          Get.toNamed(AppRoutes.loginRoute);
+        } else {
+          Get.toNamed(AppRoutes.profileRoute);
+        }
+      } else {
+        // here check if user is goint to Porfile screen then check user have token or not
+        Get.toNamed(AppRoutes.routesArray[index]);
+      }
+    });
   }
 
   @override

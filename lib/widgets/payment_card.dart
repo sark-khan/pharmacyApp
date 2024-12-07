@@ -14,16 +14,18 @@ class PaymentCard extends StatelessWidget {
   }
 
   Color getStatusBackGroundColor(String status) {
-    if (status == "Completed") return Color(0xFFD4FFCD);
-    if (status == "Pending") return Color(0xFFFFF9C5);
-    if (status == "Cancelled") return Color(0xFFFFD8D8);
+    if (status == "success") return Color(0xFFD4FFCD);
+    if (status == "pending") return Color(0xFFFFF9C5);
+    if (status == "userCancelled" || status == "failure")
+      return Color(0xFFFFD8D8);
     return Colors.amber;
   }
 
   Color getStatusColor(String status) {
-    if (status == "Completed") return Color(0xFF1BBF00);
-    if (status == "Pending") return Color(0xFFFFC700);
-    if (status == "Cancelled") return Color(0xFFFF0000);
+    if (status == "success") return Color(0xFF1BBF00);
+    if (status == "pending") return Color(0xFFFFC700);
+    if (status == "userCancelled" || status == "failure")
+      return Color(0xFFFF0000);
     return Colors.amber;
   }
 
@@ -47,7 +49,7 @@ class PaymentCard extends StatelessWidget {
                 Container(
                   child: Center(
                     child: Text(
-                      "INR ${paymentData.amount}",
+                      "INR ${paymentData.netAmount}",
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w500,
@@ -90,7 +92,7 @@ class PaymentCard extends StatelessWidget {
                       ),
                     )),
                 TextSpan(
-                  text: paymentData.opdNumber,
+                  text: paymentData.qpId,
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                         fontWeight: FontWeight.w400,
@@ -115,7 +117,7 @@ class PaymentCard extends StatelessWidget {
                       ),
                     )),
                 TextSpan(
-                    text: paymentData.taxationNumber,
+                    text: paymentData.txnNo,
                     style: GoogleFonts.poppins(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -139,7 +141,7 @@ class PaymentCard extends StatelessWidget {
                       ),
                     )),
                 TextSpan(
-                  text: getFormattedDate(paymentData.paymentDateAndTime),
+                  text: getFormattedDate(paymentData.createdAt),
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                         fontWeight: FontWeight.w400,
@@ -147,6 +149,30 @@ class PaymentCard extends StatelessWidget {
                         color: AppColors.textLightBlack),
                   ),
                 ),
+              ],
+            ),
+          ),
+          SizedBox(height: 2),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                    text: "Doctor : ",
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        color: AppColors.textDarkBlack,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    )),
+                TextSpan(
+                    text: "Dr ${paymentData.doctorName}",
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: AppColors.textLightBlack),
+                    )),
               ],
             ),
           ),
@@ -164,7 +190,30 @@ class PaymentCard extends StatelessWidget {
                       ),
                     )),
                 TextSpan(
-                    text: paymentData.patientName,
+                    text: paymentData.patient,
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: AppColors.textLightBlack),
+                    )),
+              ],
+            ),
+          ),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                    text: "Payment Method : ",
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        color: AppColors.textDarkBlack,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    )),
+                TextSpan(
+                    text: "${paymentData.type}",
                     style: GoogleFonts.poppins(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w400,

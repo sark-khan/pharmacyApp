@@ -1,15 +1,17 @@
 // views/doctor_list_screen.dart
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
 import '../models/hospital.dart';
-import '../widgets/filter_bottom_sheet.dart';
-import '../components/doctorsComponents/search_results.dart';
 import './bottom_navigation_bar.dart';
 import '../utils/routes.dart';
 import '../controllers/hospitals_screen_controller.dart';
 import '../widgets/hospital_card.dart';
+import '../components/hospitalComponents/search_results.dart';
+import '../controllers/home_controller.dart';
+import './hospital_details_screen.dart';
 
 class HospitalScreen extends StatefulWidget {
   @override
@@ -18,19 +20,40 @@ class HospitalScreen extends StatefulWidget {
 
 class _HospitalScreenState extends State<HospitalScreen> {
   late HospitalController controller;
+  final HomeController homeController = Get.find<HomeController>();
+  final TextEditingController searchController = TextEditingController();
+  Timer? _debounce;
   @override
   void initState() {
     super.initState();
-    // Initialize HospitalController each time DoctorsScreen is shown
     controller = Get.put(HospitalController(), tag: 'HospitalScreen');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.requestFetchHospitalsForHosptialScreen(
+          homeController.selectedLocation.value, {});
+      setState(() {});
+    });
+    searchController.addListener(_onSearchChanged);
+    // Initialize HospitalController each time DoctorsScreen is shown
   }
 
   @override
   void dispose() {
     // Dispose of the HospitalController when leaving HospitalScreen
     Get.delete<HospitalController>(tag: 'HospitalScreen');
+    searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
-    print("delte");
+  }
+
+  _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      // Perform the API call when the user stops typing
+      final query = searchController.text.trim();
+      controller.requestFetchHospitalsForHosptialScreen(
+          homeController.selectedLocation.value, {"q": query});
+      //api fetch here
+    });
   }
 
   @override
@@ -65,6 +88,7 @@ class _HospitalScreenState extends State<HospitalScreen> {
                   borderRadius: BorderRadius.circular(12), // Rounded corners
                 ),
                 child: TextField(
+                  controller: searchController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,
@@ -86,20 +110,27 @@ class _HospitalScreenState extends State<HospitalScreen> {
               ),
             ),
             SizedBox(height: 6),
+            SearchResultsHeader(searchLocation: "HospitalScreen"),
             Obx(() {
-              return SearchResultsHeader(
-                resultCount: controller.hostpitalsList.length,
-              );
-            }),
-            Obx(() {
-              print("we are in this bro ");
-              print(controller.isLoading.value);
               if (controller.isLoading.value == true) {
-                print("we are in this bro3232323 ");
                 return Expanded(
                   child: Center(
                     child: CircularProgressIndicator(
                       color: AppColors.primary,
+                    ),
+                  ),
+                );
+              }
+              if (controller.hostpitalsList.length == 0) {
+                return Expanded(
+                  child: Center(
+                    child: Text(
+                      "No Result Found.",
+                      style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              height: 20 / 16)),
                     ),
                   ),
                 );
@@ -110,9 +141,14 @@ class _HospitalScreenState extends State<HospitalScreen> {
                 itemCount: controller.hostpitalsList.length,
                 itemBuilder: (context, index) {
                   Hospital hospital = controller.hostpitalsList[index];
-                  return HospitalCard(
-                    hospital: hospital,
-                    forHomeScreen: false,
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(() => HospitalPage(slug: hospital.slug));
+                    },
+                    child: HospitalCard(
+                      hospital: hospital,
+                      forHomeScreen: false,
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) => SizedBox(height: 16),

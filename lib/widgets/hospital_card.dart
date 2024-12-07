@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
 import '../models/hospital.dart';
+import '../utils/app_constant.dart';
 
 class HospitalCard extends StatelessWidget {
   final Hospital hospital;
@@ -25,17 +27,24 @@ class HospitalCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(18),
-                child: Image.network(
-                  "https://thumbs.dreamstime.com/b/hospital-building-modern-parking-lot-59693686.jpg",
+                borderRadius: BorderRadius.circular(18.0),
+                child: CachedNetworkImage(
                   height: 148,
                   width: double.infinity,
+                  imageUrl: hospital.image != ""
+                      ? "${AppConstant.ImageDomain}/${hospital.image}"
+                      : "${AppConstant.ImageDomain}/fallback-Hospital.jpg",
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      Icon(Icons.error, color: Colors.red),
                 ),
               ),
               SizedBox(height: 10),
               Text(
-                "${hospital.name}",
+                "${hospital.title}",
                 style: GoogleFonts.poppins(
                   fontSize: 19,
                   fontWeight: FontWeight.w400,
@@ -44,7 +53,7 @@ class HospitalCard extends StatelessWidget {
               ),
               SizedBox(height: 4),
               Text(
-                "${hospital.city}, ${hospital.state}",
+                hospital.address,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
                   color: Color.fromRGBO(0, 0, 0, 0.6),
@@ -87,7 +96,7 @@ class HospitalCard extends StatelessWidget {
                   ),
                   SizedBox(width: 10),
                   Text(
-                    "${hospital.noOfDoctors}+ Doctors",
+                    "${hospital.doctorsCount}+ Doctors",
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
@@ -106,16 +115,20 @@ class HospitalCard extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
             decoration: BoxDecoration(
-              color: Color.fromRGBO(228, 255, 223, 1),
+              color: hospital.isAvailableToday
+                  ? Color.fromRGBO(228, 255, 223, 1)
+                  : Color.fromRGBO(255, 216, 216, 1),
               borderRadius: BorderRadius.circular(14.0),
               border: Border.all(width: 2, color: Colors.white),
             ),
             child: Text(
-              "Open Today",
+              hospital.isAvailableToday == true ? "Open Today" : "Closed",
               style: GoogleFonts.poppins(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: Color.fromRGBO(27, 191, 0, 1),
+                color: hospital.isAvailableToday
+                    ? Color.fromRGBO(27, 191, 0, 1)
+                    : Color.fromRGBO(255, 0, 0, 1),
               ),
             ),
           ),

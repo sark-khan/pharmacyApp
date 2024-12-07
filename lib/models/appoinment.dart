@@ -2,32 +2,36 @@ import 'dart:convert';
 
 class AppointmentData {
   String doctorName;
-  String patientName;
-  String appointmentId;
+  String patient;
+  String qpId;
   String status;
-  DateTime appointmentDate;
-
-  AppointmentData({
-    required this.doctorName,
-    required this.patientName,
-    required this.appointmentId,
-    required this.status,
-    required this.appointmentDate,
-  });
+  DateTime dateTime;
+  String refundStatus;
+  bool isRescheduled;
+  AppointmentData(
+      {required this.doctorName,
+      required this.patient,
+      required this.qpId,
+      required this.status,
+      required this.refundStatus,
+      required this.dateTime,
+      required this.isRescheduled});
 
   factory AppointmentData.fromJson(Map<String, dynamic> json) =>
       AppointmentData(
+        refundStatus: json["refundStatus"],
         doctorName: json["doctorName"],
-        patientName: json["patientName"],
-        appointmentId: json["appointmentId"],
+        patient: json["patient"],
+        qpId: json["qpId"],
+        isRescheduled: json["isRescheduled"],
         status: json['status'],
-        appointmentDate: DateTime.parse(json["appointmentDate"]),
+        dateTime: DateTime.parse(json["dateTime"]),
       );
 
   // Map<String, dynamic> toJson() => {
   //       "doctorName": doctorName,
-  //       "patientName": patientName,
-  //       "appointmentId": appointmentId,
+  //       "patient": patient,
+  //       "qpId": qpId,
   //       "status": status,
   //       "appointmentDate": appointmentDate.toIso8601String(),
   //     };

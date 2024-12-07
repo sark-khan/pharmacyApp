@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hospital_app/utils/helper_class.dart';
 import '../utils/colors.dart';
+import '../models/doctor.dart';
+import '../utils/app_constant.dart';
+import 'package:get/get.dart';
+import '../views/doctor_booking_slot.dart';
 
 class DoctorBookingCard extends StatelessWidget {
-  const DoctorBookingCard({super.key});
+  final Doctor doctor;
+  DoctorBookingCard({super.key, required this.doctor});
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +28,16 @@ class DoctorBookingCard extends StatelessWidget {
               Container(
                 height: 90,
                 width: 90,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/doctor_placeholder.jpg"),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                      8.0), // Ensures the image follows the same border radius
+                  child: Image.network(
+                    doctor.image.isNotEmpty
+                        ? "${AppConstant.ImageDomain}/${doctor.image}"
+                        : "${AppConstant.ImageDomain}/doctor-fallback.jpg",
                     fit: BoxFit.cover,
+                    width: 90,
+                    height: 90,
                   ),
                 ),
               ),
@@ -41,10 +52,15 @@ class DoctorBookingCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     color: Color.fromRGBO(255, 255, 255, 0.8),
                   ),
-                  child: Image.asset(
-                    'assets/images/available_icon_red.png',
-                    fit: BoxFit.cover,
-                  ),
+                  child: doctor.isAvailableToday == true
+                      ? Image.asset(
+                          'assets/images/available_icon_green.png',
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset(
+                          'assets/images/available_icon_red.png',
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
             ]),
@@ -57,7 +73,7 @@ class DoctorBookingCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Dr. Jeevan singh",
+                  "${doctor.honorific} ${StringFunctions.convertToTitleCase(doctor.name)}",
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -65,7 +81,7 @@ class DoctorBookingCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Sexiologist • 8+ Years",
+                  "${doctor.department} • ${doctor.experienceCount ?? 1}+ Years",
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -95,7 +111,7 @@ class DoctorBookingCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4.0),
                           Text(
-                            "4.2",
+                            "${doctor.rating}",
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
@@ -119,7 +135,7 @@ class DoctorBookingCard extends StatelessWidget {
                         children: [
                           Image.asset("assets/images/ruppe_icon.png"),
                           Text(
-                            "250",
+                            "${doctor.appointmentPrice}",
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
@@ -132,23 +148,30 @@ class DoctorBookingCard extends StatelessWidget {
                     SizedBox(
                       width: 8,
                     ),
-                    Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                            color: Color.fromRGBO(5, 102, 211, 1),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30))),
-                        height: 30,
-                        child: Center(
-                          child: Text(
-                            "Book",
-                            style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500)),
-                          ),
-                        )),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(() => DoctorBookingSlot(
+                              slug: doctor.slug,
+                            ));
+                      },
+                      child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(5, 102, 211, 1),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30))),
+                          height: 30,
+                          child: Center(
+                            child: Text(
+                              "Book",
+                              style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500)),
+                            ),
+                          )),
+                    ),
                   ],
                 ),
               ],

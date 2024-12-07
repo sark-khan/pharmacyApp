@@ -1,27 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hospital_app/utils/auth_helper.dart';
 import 'package:hospital_app/utils/colors.dart';
+import '../controllers/bottom_filter_controller.dart';
+import '../controllers/doctors_screen_controller.dart';
+import '../controllers/home_controller.dart';
+import '../controllers/hospitals_screen_controller.dart';
 
 class FiltersBottomSheet extends StatefulWidget {
+  final String screenLocation;
+  const FiltersBottomSheet({Key? key, required this.screenLocation})
+      : super(key: key);
   @override
   _FiltersBottomSheetState createState() => _FiltersBottomSheetState();
 }
 
 class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
-  Map<String, bool> departments = {
-    'Orthopedics': false,
-    'Cardiology': false,
-    'Ophthalmology': false,
-    "abc": false
-  };
-
-  Map<String, bool> treatmentAreas = {
-    'Orthopedics': false,
-    'Cardiology': false,
-    'Ophthalmology': false,
-  };
+  late FiltersController controller;
+  late DoctorController doctorsScreenController = DoctorController();
+  late HomeController homeController = HomeController();
+  late HospitalController hospitalsScreenController = HospitalController();
 
   String selectedSort = "";
+  void _resetFilters() {
+    controller.selectedDepartment.value = "";
+    controller.selectedTreatmentAreas.clear();
+    controller.selectedSortingMethod.value = "";
+    if (homeController.selectedLocation.value.isNotEmpty) {
+      if (widget.screenLocation == "DoctorScreen") {
+        doctorsScreenController.requestFetchDoctorsForDoctorsSceen(
+            homeController.selectedLocation.value, {});
+      } else {
+        hospitalsScreenController.requestFetchHospitalsForHosptialScreen(
+            homeController.selectedLocation.value, {});
+      }
+    }
+  }
+
+  void initState() {
+    super.initState();
+    controller = Get.find<FiltersController>(tag: widget.screenLocation);
+    // Delay setup until after the initial widget build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeController = Get.find<HomeController>();
+      doctorsScreenController =
+          Get.put(DoctorController(), tag: 'DoctorSearchScreen');
+      hospitalsScreenController =
+          Get.put(HospitalController(), tag: "HospitalScreen");
+    });
+  }
+
+  void _appFiltersAndFetchList() {
+    print(homeController.selectedLocation.value);
+    if (homeController.selectedLocation.value.isNotEmpty) {
+      var payload = <String, dynamic>{};
+      if (controller.selectedDepartment.value.isNotEmpty) {
+        payload['dept'] = controller.selectedDepartment.value;
+      }
+      if (controller.selectedTreatmentAreas.isNotEmpty) {
+        if (widget.screenLocation == "DoctorScreen") {
+          payload["treat"] = controller.selectedTreatmentAreas.keys.join(",");
+        } else {
+          payload["services"] =
+              controller.selectedTreatmentAreas.keys.join(",");
+        }
+      }
+      if (controller.selectedSortingMethod.isNotEmpty) {
+        payload["sortBy"] = controller.selectedSortingMethod.value;
+      }
+      print("data is fetching calle ");
+      print(payload);
+      if (widget.screenLocation == "DoctorScreen") {
+        doctorsScreenController.requestFetchDoctorsForDoctorsSceen(
+            homeController.selectedLocation.value, payload);
+      } else {
+        hospitalsScreenController.requestFetchHospitalsForHosptialScreen(
+            homeController.selectedLocation.value, payload);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +119,57 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                           ),
                         ],
                       ),
-                      Text(
-                        "Filters & Sorting",
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Filters & Sorting",
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
+                          GestureDetector(
+                            onTap: () {
+                              _resetFilters();
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              height: 24,
+                              padding: EdgeInsets.only(left: 12, right: 12),
+                              decoration: BoxDecoration(
+                                color:
+                                    Colors.white, // Light grey background color
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color.fromRGBO(5, 102, 211,
+                                        0.25), // RGBA color with 25% opacity
+                                    offset: Offset(
+                                        0, 0), // X and Y offset for the shadow
+                                    blurRadius: 8, // Spread of the shadow
+                                    spreadRadius:
+                                        0, // No extra spread, similar to CSS
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                "Reset Filter",
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -119,28 +218,80 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
       padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
       child: Column(
         children: [
-          _buildFilterSection("Departments", [
-            _buildCheckbox("Orthopedics", departments['Orthopedics']!),
-            _buildCheckbox("Cardiology", departments['Cardiology']!),
-            _buildCheckbox("abc", departments['abc']!),
-            _buildCheckbox("abc", departments['abc']!),
-            _buildCheckbox("Ophthalmology", departments['Ophthalmology']!),
-          ]),
+          Obx(() {
+            return _buildFilterSection(
+              "Departments",
+              controller.departments.entries.map((entry) {
+                // Access key as `entry.key` and value as `entry.value`
+                return _buildCheckbox(entry.value, entry.key,
+                    controller.selectedDepartment.value);
+              }).toList(),
+            );
+          }),
           SizedBox(height: 10),
-          _buildFilterSection("Treatment Areas", [
-            _buildCheckbox("Orthopedics", treatmentAreas['Orthopedics']!),
-            _buildCheckbox("Cardiology", treatmentAreas['Cardiology']!),
-            _buildCheckbox("Ophthalmology", treatmentAreas['Ophthalmology']!),
-          ]),
+          Obx(() {
+            print(
+                "Selected Department: ${controller.selectedDepartment.value}");
+            var treatmentList = controller
+                    .treatmentAreas[controller.selectedDepartment.value] ??
+                [];
+
+            return !controller.selectedDepartment.value.isNotEmpty ||
+                    treatmentList.length == 0
+                ? SizedBox()
+                : _buildFilterSection("Treatment Areas", [
+                    for (var entry in treatmentList)
+                      _buildTreamentCheckBox(entry["treatmentTitle"],
+                          entry["treatmentSlug"], entry["selected"]),
+                  ]);
+          }),
           SizedBox(height: 10),
-          _buildFilterSection("Sort", [
-            _buildRadio(
-                "Doctor’s Rating: High to low", "Doctor’s Rating: High to low"),
-            _buildRadio("Hospital’s Rating: High to low",
-                "Hospital’s Rating: High to low"),
-            _buildRadio("Price: High to low", "Price: High to low"),
-          ]),
+          Obx(() {
+            return _buildFilterSection(
+              "Sort",
+              widget.screenLocation == "DoctorScreen"
+                  ? controller.sortingMethods.entries.map((entry) {
+                      // Access key as `entry.key` and value as `entry.value`
+                      return _buildRadio(controller.selectedSortingMethod.value,
+                          entry.value, entry.key);
+                    }).toList()
+                  : controller.hospitalSortingMethods.entries.map((entry) {
+                      // Access key as `entry.key` and value as `entry.value`
+                      return _buildRadio(controller.selectedSortingMethod.value,
+                          entry.value, entry.key);
+                    }).toList(),
+            );
+          }),
           SizedBox(height: 10),
+          GestureDetector(
+            onTap: () {
+              _appFiltersAndFetchList();
+              Navigator.of(context).pop();
+            },
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 30),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: AppColors.primary),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      "Apply Filter",
+                      style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          height: 24 / 18),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -186,7 +337,7 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
     );
   }
 
-  Widget _buildCheckbox(String label, bool isSelected) {
+  Widget _buildCheckbox(String label, String slug, String selectedValue) {
     return SizedBox(
       height: 26,
       child: Row(
@@ -204,19 +355,23 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                 width: 1, // Border width
               ),
               fillColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return AppColors.primary;
-                }
-                return Colors.transparent;
+                return selectedValue == slug
+                    ? AppColors.primary
+                    : Colors.transparent;
+                // if (states.contains(WidgetState.selected)) {
+                //   return AppColors.primary;
+                // }
+                // return Colors.transparent;
               }), // Transparent fill when unchecked
               checkColor:
                   WidgetStateProperty.all(Colors.white), // Color when checked
             ),
             child: Checkbox(
-              value: isSelected,
+              value: selectedValue == slug,
               onChanged: (value) {
                 setState(() {
-                  departments[label] = value!;
+                  controller.selectedDepartment.value = slug;
+                  controller.selectedTreatmentAreas.clear();
                 });
               },
             ),
@@ -234,20 +389,78 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
     );
   }
 
-  Widget _buildRadio(String label, String value) {
+  Widget _buildTreamentCheckBox(String label, String slug, bool selected) {
+    return SizedBox(
+      height: 26,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CheckboxTheme(
+            data: CheckboxThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(4), // Rounded square corners
+              ),
+              side: BorderSide(
+                color: Color.fromRGBO(
+                    208, 218, 227, 1), // Border color to match your image
+                width: 1, // Border width
+              ),
+              fillColor: WidgetStateProperty.resolveWith((states) {
+                return controller.selectedTreatmentAreas[slug] == true
+                    ? AppColors.primary
+                    : Colors.transparent;
+                // if (states.contains(WidgetState.selected)) {
+                //   return AppColors.primary;
+                // }
+                // return Colors.transparent;
+              }), // Transparent fill when unchecked
+              checkColor:
+                  WidgetStateProperty.all(Colors.white), // Color when checked
+            ),
+            child: Checkbox(
+              value: controller.selectedTreatmentAreas[slug] == true,
+              onChanged: (value) {
+                setState(() {
+                  if (controller.selectedTreatmentAreas.containsKey(slug)) {
+                    controller.selectedTreatmentAreas.remove(slug);
+                  } else {
+                    controller.selectedTreatmentAreas[slug] = true;
+                  }
+                  // controller.selectedDepartment.value = label;
+                });
+              },
+            ),
+          ),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: Color.fromRGBO(0, 0, 0, 0.5))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRadio(String selectedValue, String label, String value) {
     return Row(
       // mainAxisSize: MainAxisSize.min,
       children: [
         Radio<String>(
           value: value,
-          groupValue: selectedSort,
+          groupValue: controller.selectedSortingMethod
+              .value, // Set directly to selectedSortingMethod
           focusColor: Colors.transparent,
           onChanged: (newValue) {
             setState(() {
-              selectedSort = newValue!;
+              controller.selectedSortingMethod.value =
+                  value; // Update the selectedSortingMethod with the new value
             });
           },
-          activeColor: AppColors.primary,
+          activeColor: AppColors.primary, // The active color when selected
         ),
         Text(
           label,

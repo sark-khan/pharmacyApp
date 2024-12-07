@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
-import "./apppointment_screen.dart";
+import './apppointment_screen.dart';
 import './bottom_navigation_bar.dart';
 import '../utils/routes.dart';
 import './profile_form_screen.dart';
 import './payments_screen.dart';
+import '../utils/helper_class.dart';
+import '../controllers/profile_controller.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileController controller = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
+    final storage = GetStorage();
+    final userDetails = storage.read("userDetails");
+    final String fullName = userDetails?["fullName"] ?? "Guest";
+    final String email = userDetails?["email"] ?? "";
     return Scaffold(
         backgroundColor: AppColors.doctorScreenBackgroudColor,
         body: Container(
@@ -36,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Hi, Mahesh Bohra",
+                              "Hi, ${StringFunctions.convertToTitleCase(fullName)}",
                               style: GoogleFonts.poppins(
                                   textStyle: TextStyle(
                                       color: Colors.white,
@@ -47,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
                               height: 8,
                             ),
                             Text(
-                              "maheskumar251@gmail.com",
+                              "${StringFunctions.capitalizeFirstLetter(email)}",
                               style: GoogleFonts.poppins(
                                   textStyle: TextStyle(
                                       fontWeight: FontWeight.w400,

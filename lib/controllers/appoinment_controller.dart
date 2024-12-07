@@ -1,7 +1,13 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../models/appoinment.dart';
+import '../utils/dio_client.dart';
+import '../utils/helper_class.dart';
+import '../utils/auth_helper.dart';
+import '../utils/dio_client.dart';
+import '../utils/routes.dart';
 
 class AppoinmentController extends GetxController {
   var appointmentList = <AppointmentData>[].obs;
@@ -10,36 +16,76 @@ class AppoinmentController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    ();
-    fetchAppoinments();
+    fetchAppointments();
   }
 
-  Future<void> fetchAppoinments() async {
+  Future<void> fetchAppointments() async {
     isLoading.value = true;
     try {
-      // await Future.delayed(Duration(seconds: 5));
+      var token = AuthHelper.getToken() ?? "";
+      Options options = Options(headers: {'Authorization': 'Bearer $token'});
+
       final response =
-          await http.get(Uri.parse('http://localhost:4221/fetchappoinments'));
+          await DioClient.dio.get("/patient/appointments", options: options);
 
       if (response.statusCode == 200) {
-        dynamic data = json.decode(response.body);
-        print(data['data']);
-        // print(data);
-        List<dynamic> responseData = data['data'];
-        // print(responseData);
-        appointmentList.value =
-            responseData.map((json) => AppointmentData.fromJson(json)).toList();
-        print("ye bro we receive appoinemtn");
+        var data = response.data;
+        var listOfAppointments = data?["data"] ?? [];
+        appointmentList.value = List.from(
+            listOfAppointments.map((e) => AppointmentData.fromJson(e)));
+      }
+    } on DioException catch (e) {
+      // Handle Dio-specific exceptions
+      if (e.response?.statusCode == 401) {
+        // Unauthorized error
+        Get.snackbar(
+          '',
+          'Your session has expired. Please login again.',
+          duration: Duration(seconds: 1),
+        );
+        await Future.delayed(Duration(seconds: 1));
+        Get.offAllNamed(AppRoutes.loginRoute);
 
-        // applyFilters();
+        // Optionally, log out the user or navigate to login screen
+        // AuthHelper.logout(); // Add your logout logic here
       } else {
-        Get.snackbar('Error',
-            'Failed to fetch appinemtn. Status code: ${response.statusCode}');
+        Get.snackbar(
+          'Error',
+          e.response?.data?['message'] ?? 'Failed to fetch appointments',
+          duration: Duration(seconds: 2),
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch appintment: $e');
+      // Handle other exceptions
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred',
+        duration: Duration(seconds: 2),
+      );
     } finally {
       isLoading.value = false;
     }
   }
+
+  // Future<void> fetchAppoinments() async {
+  //   isLoading.value = true;
+  //   try {
+  //     var token = AuthHelper.getToken() ?? "";
+  //     Options options = Options(headers: {'Authorization': 'Bearer $token'});
+  //     final response =
+  //         await DioClient.dio.get("/patient/appointments", options: options);
+  //     if (response.statusCode == 200) {
+  //       var data = response.data;
+  //       var listOfAppointments = data?["data"] ?? [];
+  //       print(listOfAppointments);
+  //       appointmentList.value = List.from(
+  //           listOfAppointments.map((e) => AppointmentData.fromJson(e)));
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     Get.snackbar('', 'Failed to fetch appintment');
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 }

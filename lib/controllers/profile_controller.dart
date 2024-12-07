@@ -1,44 +1,37 @@
-import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
 import '../models/appoinment.dart';
-import '../models/payment.dart';
+import '../utils/helper_class.dart';
 import '../utils/dio_client.dart';
 import 'package:dio/dio.dart';
 import '../utils/auth_helper.dart';
+import '../views/login.dart';
 import '../utils/routes.dart';
 
-class PaymentController extends GetxController {
-  var paymentList = <PaymentData>[].obs;
+class ProfileController extends GetxController {
   var isLoading = false.obs;
-
+  var userDetails = <String, dynamic>{}.obs;
+  final storage = GetStorage();
   @override
   void onInit() {
     super.onInit();
-    ();
-    fetchPayments();
   }
 
-  Future<void> fetchPayments() async {
+  Future<ReturnObj> requestUpdateProfile(Map<String, dynamic> payload) async {
     isLoading.value = true;
     try {
-      final token = AuthHelper.getToken() ?? "";
-      Options options = Options(headers: {'Authorization': "Bearer $token"});
-      final response =
-          await DioClient.dio.get("/patient/transactions", options: options);
+      var token = AuthHelper.getToken() ?? "";
+      var options = Options(headers: {'Authorization': "Bearer ${token}"});
 
-      if (response.statusCode == 200) {
-        var data = response.data;
-        var allTransactions = data?["data"] ?? [];
+      var response = await DioClient.dio
+          .post("/patient/update", data: payload, options: options);
 
-        paymentList.value = allTransactions
-            .map((e) {
-              return PaymentData.fromJson(e);
-            })
-            .toList()
-            .cast<PaymentData>();
+      if (response.statusCode == 201) {
+        return ReturnObj(
+            status: true, message: response.data["message"], data: response);
       }
+      return ReturnObj(
+          message: response.data["message"], data: response, status: false);
     } on DioException catch (e) {
       // Handle Dio-specific exceptions
       if (e.response?.statusCode == 401) {
@@ -50,15 +43,17 @@ class PaymentController extends GetxController {
         );
         await Future.delayed(Duration(seconds: 1));
         Get.offAllNamed(AppRoutes.loginRoute);
+        return ReturnObj(message: e.response?.data?['message'], status: false);
 
         // Optionally, log out the user or navigate to login screen
         // AuthHelper.logout(); // Add your logout logic here
       } else {
         Get.snackbar(
           'Error',
-          e.response?.data?['message'] ?? 'Failed to fetch payments',
+          e.response?.data?['message'] ?? 'Failed to uodate profile',
           duration: Duration(seconds: 2),
         );
+        return ReturnObj(message: e.response?.data?['message'], status: false);
       }
     } catch (e) {
       // Handle other exceptions
@@ -67,6 +62,7 @@ class PaymentController extends GetxController {
         'An unexpected error occurred',
         duration: Duration(seconds: 2),
       );
+      return ReturnObj(message: "failed to update profile", status: false);
     } finally {
       isLoading.value = false;
     }

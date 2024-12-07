@@ -1,4 +1,6 @@
 // views/doctor_list_screen.dart
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +12,9 @@ import '../components/doctorsComponents/search_results.dart';
 import '../widgets/doctor_card.dart';
 import './bottom_navigation_bar.dart';
 import '../utils/routes.dart';
+import '../controllers/home_controller.dart';
+import '../controllers/bottom_filter_controller.dart';
+import '../views/doctor_booking_slot.dart';
 
 class DoctorsScreen extends StatefulWidget {
   @override
@@ -18,19 +23,43 @@ class DoctorsScreen extends StatefulWidget {
 
 class _DoctorsScreenState extends State<DoctorsScreen> {
   late DoctorController controller;
+  final HomeController homeController = Get.find<HomeController>();
+  final TextEditingController searchController = TextEditingController();
+  Timer? _debounce;
   @override
   void initState() {
     super.initState();
-    // Initialize DoctorController each time DoctorsScreen is shown
-    controller = Get.put(DoctorController(), tag: 'DoctorsScreen');
+    controller = Get.put(DoctorController(), tag: 'DoctorSearchScreen');
+    // Delay setup until after the initial widget build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.requestFetchDoctorsForDoctorsSceen(
+          homeController.selectedLocation.value, <String, dynamic>{});
+      setState(() {});
+    });
+    searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
-    // Dispose of the DoctorController when leaving DoctorsScreen
-    Get.delete<DoctorController>(tag: 'DoctorsScreen');
+    Get.delete<DoctorController>(tag: 'DoctorSearchScreen');
+    searchController.dispose(); // Dispose of the controller
+    if (Get.isRegistered<FiltersController>(tag: "DoctorScreen")) {
+      Get.delete<FiltersController>(tag: "DoctorScreen");
+    }
+    _debounce?.cancel(); // Cancel any ongoing debounce timer
+
     super.dispose();
-    print("delte");
+  }
+
+  _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      // Perform the API call when the user stops typing
+      final query = searchController.text.trim();
+      controller.requestFetchDoctorsForDoctorsSceen(
+          homeController.selectedLocation.value,
+          <String, dynamic>{"q": "${query}"}); // Add your search method here
+    });
   }
 
   @override
@@ -65,6 +94,7 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
                   borderRadius: BorderRadius.circular(12), // Rounded corners
                 ),
                 child: TextField(
+                  controller: searchController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.search,
@@ -86,16 +116,11 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
               ),
             ),
             SizedBox(height: 6),
+            SearchResultsHeader(
+              screenLocation: "DoctorScreen",
+            ),
             Obx(() {
-              return SearchResultsHeader(
-                resultCount: controller.filteredDoctors.length,
-              );
-            }),
-            Obx(() {
-              print("we are in this bro ");
-              print(controller.isLoading.value);
-              if (controller.isLoading.value == true) {
-                print("we are in this bro3232323 ");
+              if (controller == null || controller.isLoading.value == true) {
                 return Expanded(
                   child: Center(
                     child: CircularProgressIndicator(
@@ -107,11 +132,15 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
               return Expanded(
                   child: ListView.separated(
                 padding: EdgeInsets.symmetric(horizontal: 24),
-                itemCount: controller.filteredDoctors.length,
+                itemCount: controller.doctors.length,
                 itemBuilder: (context, index) {
-                  Doctor doctor = controller.filteredDoctors[index];
-                  print(doctor);
-                  return DoctorCard(doctor: doctor);
+                  Doctor doctor = controller.doctors[index];
+                  return GestureDetector(
+                      onTap: () {
+                        Get.to(() => DoctorBookingSlot(slug: doctor.slug),
+                            arguments: {"slug": doctor.hospitalSlug});
+                      },
+                      child: DoctorCard(doctor: doctor));
                 },
                 separatorBuilder: (context, index) => SizedBox(height: 16),
               ));

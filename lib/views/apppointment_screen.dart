@@ -81,7 +81,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               SizedBox(height: 20),
               Obx(() {
                 if (controller.isLoading.value) {
-                  print("Loading appointments...");
                   return Center(
                     child: CircularProgressIndicator(
                       color: AppColors.primary,

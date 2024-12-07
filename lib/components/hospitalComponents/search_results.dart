@@ -3,22 +3,23 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math';
 import '../../widgets/filter_bottom_sheet.dart';
-import '../../controllers/doctors_screen_controller.dart';
 import '../../controllers/bottom_filter_controller.dart';
+import '../../controllers/hospitals_screen_controller.dart';
 
 class SearchResultsHeader extends StatefulWidget {
-  final String screenLocation;
-  SearchResultsHeader({Key? key, required this.screenLocation});
+  final String searchLocation;
+  SearchResultsHeader({Key? key, required this.searchLocation})
+      : super(key: key);
   @override
   State<SearchResultsHeader> createState() => _SearchResultsHeaderState();
 }
 
 class _SearchResultsHeaderState extends State<SearchResultsHeader> {
-  late DoctorController doctorController = DoctorController();
+  late HospitalController hospitalController = HospitalController();
   @override
   void _showFilterBottomSheet(BuildContext context) {
-    if (!Get.isRegistered<FiltersController>(tag: widget.screenLocation)) {
-      Get.put(FiltersController(), tag: widget.screenLocation);
+    if (!Get.isRegistered<FiltersController>(tag: widget.searchLocation)) {
+      Get.put(FiltersController(), tag: widget.searchLocation);
     } else {}
     showModalBottomSheet(
       context: context,
@@ -27,7 +28,7 @@ class _SearchResultsHeaderState extends State<SearchResultsHeader> {
               topLeft: Radius.circular(32), topRight: Radius.circular(32))),
       builder: (BuildContext context) {
         return FiltersBottomSheet(
-          screenLocation: widget.screenLocation,
+          screenLocation: widget.searchLocation,
         );
       },
     );
@@ -37,7 +38,7 @@ class _SearchResultsHeaderState extends State<SearchResultsHeader> {
     super.initState();
     // Delay setup until after the initial widget build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      doctorController = Get.put(DoctorController(), tag: 'DoctorSearchScreen');
+      hospitalController = Get.put(HospitalController(), tag: 'HospitalScreen');
       setState(() {});
     });
   }
@@ -78,13 +79,13 @@ class _SearchResultsHeaderState extends State<SearchResultsHeader> {
             width: 8,
           ),
           Obx(() {
-            if (doctorController == null ||
-                doctorController.isLoading == true) {
+            if (hospitalController == null ||
+                hospitalController.isLoading == true) {
               return SizedBox();
             }
             return Expanded(
               child: Text(
-                "Found ${doctorController.doctors.length ?? 0}+ Results For Your Search",
+                "Found ${hospitalController.hostpitalsList.length ?? 0}+ Results For Your Search",
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(
                     fontSize: 14,

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
+import '../controllers/hostpital_detaill_screen.dart';
+import '../utils/helper_class.dart';
 
 class MainInfoOfHospital extends StatelessWidget {
-  const MainInfoOfHospital({super.key});
+  final HospitalDetailsController controller =
+      Get.find<HospitalDetailsController>(tag: "HospitalDetailScreen");
+  MainInfoOfHospital({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +56,8 @@ class MainInfoOfHospital extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Jeevan Raksha Hospital",
+                          StringFunctions.convertToTitleCase(
+                              controller.hospitalDetails["title"]),
                           style: GoogleFonts.poppins(
                               textStyle: TextStyle(
                                   color: Colors.black,
@@ -62,7 +68,8 @@ class MainInfoOfHospital extends StatelessWidget {
                           height: 8,
                         ),
                         Text(
-                          "Bikaner, Rajasthan",
+                          StringFunctions.convertToTitleCase(
+                              controller.hospitalDetails["location"]),
                           style: GoogleFonts.poppins(
                               textStyle: TextStyle(
                                   color: Color.fromRGBO(0, 0, 0, 0.6),
@@ -96,7 +103,7 @@ class MainInfoOfHospital extends StatelessWidget {
                               fit: BoxFit.cover,
                             ),
                             Text(
-                              "4.2",
+                              "${controller.hospitalDetails["rating"] ?? 0}",
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -113,14 +120,25 @@ class MainInfoOfHospital extends StatelessWidget {
                             EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14),
-                            color: Color.fromRGBO(218, 255, 211, 1)),
+                            color: controller
+                                        .hospitalDetails["isAvailableToday"] ==
+                                    true
+                                ? Color.fromRGBO(218, 255, 211, 1)
+                                : Color.fromRGBO(255, 216, 216, 1)),
                         child: Center(
                           child: Text(
-                            "Open Today",
+                            controller.hospitalDetails["isAvailableToday"] ==
+                                    true
+                                ? "Open"
+                                : "Closed",
                             style: GoogleFonts.poppins(
                               fontSize: 10,
                               fontWeight: FontWeight.w500,
-                              color: Color.fromRGBO(27, 191, 0, 1),
+                              color: controller.hospitalDetails[
+                                          "isAvailableToday"] ==
+                                      true
+                                  ? Color.fromRGBO(27, 191, 0, 1)
+                                  : Color.fromRGBO(255, 0, 0, 1),
                             ),
                           ),
                         ),
@@ -145,7 +163,7 @@ class MainInfoOfHospital extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "17+ Doctors",
+                    "${controller.hospitalDetails["doctorsCount"] ?? 0}+ Doctors",
                     style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                       fontSize: 14,
@@ -154,7 +172,11 @@ class MainInfoOfHospital extends StatelessWidget {
                     )),
                   ),
                   Text(
-                    "Cardionaly,ENT,Gynec,Orthopedic",
+                    controller.hospitalDetails?["departmentDetails"]
+                            ?.map((ele) => ele["title"])
+                            .join(", ")
+                            .toString() ??
+                        "",
                     style: GoogleFonts.poppins(
                         textStyle: TextStyle(
                       fontSize: 14,

@@ -1,27 +1,35 @@
 class Hospital {
-  final double rating;
-  final String name;
-  final String city;
-  final String state;
+  final int doctorsCount;
+  final String address;
+  final String image;
   final bool isAvailableToday;
-  final int noOfDoctors;
+  final double rating;
+  final String slug;
+  final String title;
 
-  Hospital(
-      {required this.name,
-      required this.rating,
-      required this.isAvailableToday,
-      required this.noOfDoctors,
-      required this.city,
-      required this.state});
+  Hospital({
+    required this.doctorsCount,
+    required this.rating,
+    required this.isAvailableToday,
+    required this.slug,
+    required this.title,
+    required this.image,
+    required this.address,
+  });
 
   factory Hospital.fromJson(Map<String, dynamic> json) {
     return Hospital(
-        name: json['name'] as String,
-        rating: (json['rating'] as num)
-            .toDouble(), // Ensures the rating is a double
-        isAvailableToday: json['isAvailableToday'] as bool,
-        city: json['city'] as String,
-        state: json['state'] as String,
-        noOfDoctors: json["noOfDoctors"] as int);
+      title:
+          json['title'] as String? ?? '', // Default to an empty string if null
+      rating: (json['rating'] is int
+          ? (json['rating'] as int).toDouble()
+          : json['rating'] as double? ?? 0.0), // Default to 0.0 if null
+      isAvailableToday:
+          json['isAvailableToday'] as bool? ?? false, // Default to false
+      image: json['image'] as String? ?? '', // Default to an empty string
+      address: json['address'] as String? ?? '', // Default to an empty string
+      slug: json['slug'] as String? ?? '', // Default to an empty string
+      doctorsCount: json['DoctorsCount'] as int? ?? 0,
+    ); // Default to 0 if null
   }
 }
