@@ -32,8 +32,13 @@ class _DoctorsScreenState extends State<DoctorsScreen> {
     controller = Get.put(DoctorController(), tag: 'DoctorSearchScreen');
     // Delay setup until after the initial widget build
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      var arguments = Get.arguments;
+      Map<String, dynamic> payload = {};
+      if (arguments != null && arguments.isNotEmpty) {
+        payload = arguments;
+      }
       controller.requestFetchDoctorsForDoctorsSceen(
-          homeController.selectedLocation.value, <String, dynamic>{});
+          homeController.selectedLocation.value, payload);
       setState(() {});
     });
     searchController.addListener(_onSearchChanged);

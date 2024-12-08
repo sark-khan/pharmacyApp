@@ -70,9 +70,9 @@ class HospitalController extends GetxController {
         "page": 1,
         ...payload, // Merge the payload parameters into the body
       };
+
       var response = await DioClient.dio
           .get("/patient/hospitals/search", queryParameters: body);
-      print("fetchign hospitals list");
 
       if (response.statusCode == 200) {
         var data = response.data;

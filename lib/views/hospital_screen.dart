@@ -28,8 +28,15 @@ class _HospitalScreenState extends State<HospitalScreen> {
     super.initState();
     controller = Get.put(HospitalController(), tag: 'HospitalScreen');
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      Map<String, dynamic> payload = {};
+      var arguments = Get.arguments;
+      if (arguments != null && arguments.isNotEmpty) {
+        payload = arguments;
+      }
+
       controller.requestFetchHospitalsForHosptialScreen(
-          homeController.selectedLocation.value, {});
+          homeController.selectedLocation.value, payload);
+
       setState(() {});
     });
     searchController.addListener(_onSearchChanged);

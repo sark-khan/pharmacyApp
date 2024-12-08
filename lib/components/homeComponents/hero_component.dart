@@ -5,6 +5,7 @@ import '../../utils/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../utils/helper_class.dart';
 import '../../controllers/home_controller.dart';
+import '../../views/home_screen_search_modal.dart';
 
 class HeroComponent extends StatefulWidget {
   HeroComponent({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class HeroComponent extends StatefulWidget {
 }
 
 class HeroComponentState extends State<HeroComponent> {
-  final HomeController controller = Get.find<HomeController>();
+  late HomeController controller = HomeController();
   bool _isDropdownVisible = false;
   List<Map<String, String>> locationList = [];
   bool get isDropdownVisible => _isDropdownVisible;
@@ -21,6 +22,27 @@ class HeroComponentState extends State<HeroComponent> {
     setState(() {
       _isDropdownVisible = !_isDropdownVisible;
     });
+  }
+
+  void _openSearchDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Dismiss when tapped outside
+      builder: (_) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Transparent background
+          insetPadding: EdgeInsets.zero, // Removes default padding
+          child: HomeScreenSearchModal(
+            controller: controller,
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  initState() {
+    controller = Get.find<HomeController>();
   }
 
   @override
@@ -169,6 +191,7 @@ class HeroComponentState extends State<HeroComponent> {
                 ),
                 height: 58.5,
                 child: TextField(
+                  onTap: () => _openSearchDialog(context),
                   decoration: InputDecoration(
                     icon: Icon(Icons.search, color: AppColors.subtitle),
                     hintText: 'Search doctors, hospitals & services...',
