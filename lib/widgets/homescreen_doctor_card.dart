@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
 import '../models/doctor.dart';
@@ -82,8 +83,8 @@ class HomeScreenDoctorCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Image.asset(
-                            "assets/images/star_icon.png",
+                          SvgPicture.asset(
+                            "assets/images/star_icon.svg",
                             fit: BoxFit.cover,
                           ),
                           const SizedBox(width: 4.0),
@@ -110,7 +111,7 @@ class HomeScreenDoctorCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset("assets/images/ruppe_icon.png"),
+                          SvgPicture.asset("assets/images/ruppe_icon.svg"),
                           Text(
                             "${doctor.appointmentPrice}",
                             style: GoogleFonts.poppins(

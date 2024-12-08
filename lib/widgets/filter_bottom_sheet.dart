@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/auth_helper.dart';
@@ -200,8 +201,8 @@ class _FiltersBottomSheetState extends State<FiltersBottomSheet> {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Image.asset(
-                  "assets/images/close_icon.png",
+                child: SvgPicture.asset(
+                  "assets/images/close_icon.svg",
                   width: 36,
                   height: 36,
                 ),

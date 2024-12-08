@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
 import '../models/hospital.dart';
@@ -64,7 +65,7 @@ class HospitalCard extends StatelessWidget {
                 children: [
                   Container(
                     height: 30,
-                    width: 56,
+                    // width: 60,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8.0,
                       vertical: 4.0,
@@ -78,11 +79,11 @@ class HospitalCard extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Image.asset(
-                          "assets/images/star_icon.png",
+                        SvgPicture.asset(
+                          "assets/images/star_icon.svg",
                           fit: BoxFit.cover,
                         ),
-                        const SizedBox(width: 4.0),
+                        const SizedBox(width: 3.0),
                         Text(
                           "${hospital.rating}",
                           style: GoogleFonts.poppins(

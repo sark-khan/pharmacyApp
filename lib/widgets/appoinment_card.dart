@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
 import "../models/appoinment.dart";
@@ -206,8 +207,8 @@ class AppointmentCard extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                        "assets/images/cancel_icon.png"),
+                                    SvgPicture.asset(
+                                        "assets/images/cancel_icon.svg"),
                                     SizedBox(
                                       width: 4,
                                     ),
@@ -247,8 +248,8 @@ class AppointmentCard extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                        "assets/images/reschedule_icon.png"),
+                                    SvgPicture.asset(
+                                        "assets/images/reschedule_icon.svg"),
                                     SizedBox(
                                       width: 4,
                                     ),
@@ -280,8 +281,8 @@ class AppointmentCard extends StatelessWidget {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                        "assets/images/cancel_icon.png"),
+                                    SvgPicture.asset(
+                                        "assets/images/cancel_icon.svg"),
                                     SizedBox(
                                       width: 4,
                                     ),

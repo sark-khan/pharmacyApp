@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -607,8 +608,8 @@ class _DocterDetailsBottomSheetState extends State<DocterDetailsBottomSheet> {
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Image.asset(
-                  "assets/images/close_icon.png",
+                child: SvgPicture.asset(
+                  "assets/images/close_icon.svg",
                   width: 36,
                   height: 36,
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
@@ -382,8 +383,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 Container(
                   height: 16,
                   width: 10,
-                  child: Image.asset(
-                    "assets/images/ruppe_icon_white.png",
+                  child: SvgPicture.asset(
+                    "assets/images/ruppe_icon_white.svg",
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -413,8 +414,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 Container(
                   height: 16,
                   width: 16,
-                  child: Image.asset(
-                    "assets/images/arrow_forward_white.png",
+                  child: SvgPicture.asset(
+                    "assets/images/arrow_forward_white.svg",
                     fit: BoxFit.contain,
                   ),
                 ),

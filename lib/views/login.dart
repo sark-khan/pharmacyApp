@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
@@ -6,6 +7,7 @@ import '../utils/colors.dart';
 import './login_verification_otp.dart';
 import '../controllers/auth_controller.dart';
 import '../utils/helper_class.dart';
+import '../utils/app_constant.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,8 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                child: Image.asset("assets/images/applogo.png"),
-              ),
+                  height: 80,
+                  child: ClipRRect(
+                    child: Image.network(
+                      "${AppConstant.ImageDomain}/qpLogo.png",
+                      fit: BoxFit.cover,
+                    ),
+                  )),
               SizedBox(height: 50),
               Container(
                 padding: EdgeInsets.all(24),
@@ -161,8 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Container(
                                       width: 24,
                                       height: 24,
-                                      child: Image.asset(
-                                          "assets/images/login_forward_icon.png"),
+                                      child: SvgPicture.asset(
+                                          fit: BoxFit.cover,
+                                          "assets/images/login_forward_icon.svg"),
                                     )
                                   ],
                                 ),

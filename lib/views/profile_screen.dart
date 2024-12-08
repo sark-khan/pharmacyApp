@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -99,10 +100,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Image.asset(
-                                              "assets/images/appoinment_icon.png"),
+                                          SvgPicture.asset(
+                                              "assets/images/appointment_icon.svg"),
                                           Text(
-                                            "Appoinments",
+                                            "Appointments",
                                             style: GoogleFonts.poppins(
                                                 textStyle: TextStyle(
                                                     color: Colors.black,
@@ -135,8 +136,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Image.asset(
-                                              "assets/images/payment_icon.png"),
+                                          SvgPicture.asset(
+                                              "assets/images/payment_icon.svg"),
                                           Text(
                                             "Payments",
                                             style: GoogleFonts.poppins(
@@ -172,8 +173,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Image.asset(
-                                      "assets/images/appoinment_icon.png"),
+                                  SvgPicture.asset(
+                                      "assets/images/appointment_icon.svg"),
                                   SizedBox(
                                     width: 11,
                                   ),

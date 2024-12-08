@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/helper_class.dart';
 import '../utils/colors.dart';
@@ -53,12 +54,12 @@ class DoctorBookingCard extends StatelessWidget {
                     color: Color.fromRGBO(255, 255, 255, 0.8),
                   ),
                   child: doctor.isAvailableToday == true
-                      ? Image.asset(
-                          'assets/images/available_icon_green.png',
+                      ? SvgPicture.asset(
+                          'assets/images/available_icon_green.svg',
                           fit: BoxFit.cover,
                         )
-                      : Image.asset(
-                          'assets/images/available_icon_red.png',
+                      : SvgPicture.asset(
+                          'assets/images/available_icon_red.svg',
                           fit: BoxFit.cover,
                         ),
                 ),
@@ -105,8 +106,8 @@ class DoctorBookingCard extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Image.asset(
-                            "assets/images/star_icon.png",
+                          SvgPicture.asset(
+                            "assets/images/star_icon.svg",
                             fit: BoxFit.cover,
                           ),
                           const SizedBox(width: 4.0),
@@ -133,7 +134,7 @@ class DoctorBookingCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset("assets/images/ruppe_icon.png"),
+                          SvgPicture.asset("assets/images/ruppe_icon.svg"),
                           Text(
                             "${doctor.appointmentPrice}",
                             style: GoogleFonts.poppins(

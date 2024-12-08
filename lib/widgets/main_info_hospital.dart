@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
@@ -98,8 +99,8 @@ class MainInfoOfHospital extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Image.asset(
-                              "assets/images/star_icon.png",
+                            SvgPicture.asset(
+                              "assets/images/star_icon.svg",
                               fit: BoxFit.cover,
                             ),
                             Text(

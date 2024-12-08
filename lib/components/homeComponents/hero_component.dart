@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../controllers/home_controller.dart';
 import '../../utils/colors.dart';
@@ -93,10 +94,8 @@ class HeroComponentState extends State<HeroComponent> {
                         Container(
                           height: 28,
                           width: 24,
-                          child: Image.asset(
-                            'assets/images/location.png',
-                            color: Colors
-                                .white, // Optional: Apply a color tint if needed
+                          child: SvgPicture.asset(
+                            'assets/images/location.svg',
                             fit: BoxFit.cover,
                           ),
                         ),

@@ -27,6 +27,7 @@ void main() async {
   await GetStorage.init();
   final storage = GetStorage();
   final keys = storage.getKeys();
+
   keys.forEach((key) => print('Key: $key, Value: ${storage.read(key)}'));
   runApp(const MyApp());
 }

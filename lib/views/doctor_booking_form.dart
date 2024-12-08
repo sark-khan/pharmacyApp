@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -338,8 +339,8 @@ class _DoctorBookingFormState extends State<DoctorBookingForm> {
                                 Container(
                                   width: 12.08,
                                   height: 7.24,
-                                  child: Image.asset(
-                                    "assets/images/arrow_down.png",
+                                  child: SvgPicture.asset(
+                                    "assets/images/arrow_down.svg",
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -381,8 +382,8 @@ class _DoctorBookingFormState extends State<DoctorBookingForm> {
                               children: [
                                 Container(
                                   height: 12,
-                                  child: Image.asset(
-                                    "assets/images/arrow_back.png",
+                                  child: SvgPicture.asset(
+                                    "assets/images/arrow_back.svg",
                                     fit: BoxFit.contain,
                                   ),
                                 ),
@@ -560,8 +561,8 @@ class _DoctorBookingFormState extends State<DoctorBookingForm> {
                                   Container(
                                     height: 16,
                                     width: 10,
-                                    child: Image.asset(
-                                      "assets/images/ruppe_icon_white.png",
+                                    child: SvgPicture.asset(
+                                      "assets/images/ruppe_icon_white.svg",
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -591,8 +592,8 @@ class _DoctorBookingFormState extends State<DoctorBookingForm> {
                                   Container(
                                     height: 16,
                                     width: 16,
-                                    child: Image.asset(
-                                      "assets/images/arrow_forward_white.png",
+                                    child: SvgPicture.asset(
+                                      "assets/images/arrow_forward_white.svg",
                                       fit: BoxFit.contain,
                                     ),
                                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import "package:get/get.dart";
 import "package:google_fonts/google_fonts.dart";
 import "package:hospital_app/utils/colors.dart";
@@ -82,7 +83,7 @@ class _TranscationScreenState extends State<TranscationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.asset("assets/images/transaction_icon.png"),
+                      SvgPicture.asset("assets/images/transaction_icon.svg"),
                       SizedBox(
                         height: 10,
                       ),

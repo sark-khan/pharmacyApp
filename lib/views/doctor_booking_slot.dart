@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
@@ -20,192 +21,6 @@ class DoctorBookingSlot extends StatefulWidget {
   @override
   State<DoctorBookingSlot> createState() => _DoctorBookingSlotState();
 }
-
-// class _DoctorBookingSlotState extends State<DoctorBookingSlot> {
-//   late final HospitalDetailsController controller =
-//       Get.find<HospitalDetailsController>(tag: "HospitalDetailScreen");
-//   final List<String> specialties = [
-//     "All",
-//     "Cardioly",
-//     "OrthoPodcas",
-//     "Surgery",
-//     "GynoCology"
-//   ];
-
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       controller.fetchParticularDoctorDetails(widget.slug);
-//     });
-
-//     super.initState();
-//   }
-
-//   @override
-//   void dispose() {
-//     // TODO: implement dispose
-//     controller.doctorDetails.clear();
-//     super.dispose();
-//   }
-
-//   void _showFilterBottomSheet(BuildContext context) {
-//     showModalBottomSheet(
-//       context: context,
-//       isScrollControlled: true,
-//       shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.only(
-//               topLeft: Radius.circular(32), topRight: Radius.circular(32))),
-//       builder: (BuildContext context) {
-//         return Container(
-//           height: MediaQuery.of(context).size.height *
-//               0.75, // Open at 60% of the screen height
-//           child: DocterDetailsBottomSheet(
-//             slug: widget.slug,
-//           ),
-//         );
-//       },
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         // backgroundColor: Colors.white,
-//         backgroundColor: AppColors.doctorScreenBackgroudColor,
-//         body: Obx(() {
-//           if (controller.isLoading.value == true) {
-//             return Center(
-//                 child: CircularProgressIndicator(
-//               color: AppColors.primary,
-//             ));
-//           }
-//           if (controller.doctorDetails.isEmpty) {
-//             return Center(
-//               child: Text(
-//                 "Doctor Details Not Found",
-//                 style: GoogleFonts.poppins(
-//                     height: 24 / 16, fontSize: 16, fontWeight: FontWeight.w400),
-//               ),
-//             );
-//           }
-//           return SingleChildScrollView(
-//             child: Stack(
-//               fit: StackFit.loose,
-//               children: [
-//                 HospitalImagePageview(),
-//                 Column(
-//                   children: [
-//                     MainInfoOfHospital(),
-//                     SizedBox(
-//                       height: 10,
-//                     ),
-//                     Container(
-//                       color: Colors.white,
-//                       padding: EdgeInsets.all(16),
-//                       child: Column(
-//                         children: [
-//                           GestureDetector(
-//                             onTap: () {
-//                               _showFilterBottomSheet(context);
-//                             },
-//                             child: Container(
-//                               padding: EdgeInsets.all(6),
-//                               decoration: BoxDecoration(
-//                                   color: AppColors.doctorScreenBackgroudColor,
-//                                   borderRadius: BorderRadius.circular(12)),
-//                               child: Row(
-//                                 crossAxisAlignment: CrossAxisAlignment.center,
-//                                 children: [
-//                                   Container(
-//                                     height: 48,
-//                                     width: 48,
-//                                     child: ClipRRect(
-//                                       borderRadius: BorderRadius.circular(
-//                                           8.0), // Ensures the image follows the same border radius
-//                                       child: Image.network(
-//                                         (controller.doctorDetails?["image"]
-//                                                     ?.isEmpty ??
-//                                                 true)
-//                                             ? "${AppConstant.ImageDomain}/doctor-fallback.jpg"
-//                                             : "${AppConstant.ImageDomain}/${controller.doctorDetails["image"]}",
-//                                         fit: BoxFit.cover,
-//                                         width: 90,
-//                                         height: 90,
-//                                       ),
-//                                     ),
-//                                   ),
-//                                   SizedBox(
-//                                     width: 10,
-//                                   ),
-//                                   Column(
-//                                     crossAxisAlignment:
-//                                         CrossAxisAlignment.start,
-//                                     children: [
-//                                       Text(
-//                                         "${controller.doctorDetails["honorific"]} ${StringFunctions.convertToTitleCase(controller.doctorDetails["name"])}",
-//                                         style: GoogleFonts.poppins(
-//                                             height: 24 / 16,
-//                                             fontSize: 16,
-//                                             fontWeight: FontWeight.w400),
-//                                       ),
-//                                       SizedBox(
-//                                         height: 2,
-//                                       ),
-//                                       Text(
-//                                         "${controller.doctorDetails["department"]} • ${controller.doctorDetails["experienceCount"] ?? 0}+ Years Experience",
-//                                         style: GoogleFonts.poppins(
-//                                             color: Color.fromRGBO(0, 0, 0, 0.6),
-//                                             height: 16 / 12,
-//                                             fontSize: 12,
-//                                             fontWeight: FontWeight.w400),
-//                                       )
-//                                     ],
-//                                   ),
-//                                   Spacer(),
-//                                   Container(
-//                                     width: 12.08,
-//                                     height: 7.24,
-//                                     child: Image.asset(
-//                                       "assets/images/arrow_down.png",
-//                                       fit: BoxFit.cover,
-//                                     ),
-//                                   ),
-//                                   SizedBox(
-//                                     height: 10,
-//                                   ),
-//                                 ],
-//                               ),
-//                             ),
-//                           )
-//                         ],
-//                       ),
-//                     ),
-//                     SizedBox(
-//                       height: 10,
-//                     ),
-//                     Container(
-//                       color: Colors.white,
-//                       child: Column(
-//                         children: [
-//                           CalendarWidget(),
-//                           SizedBox(
-//                             height: 10,
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ],
-//             ),
-//           );
-//         }),
-//         bottomNavigationBar: BottomNavBar(
-//             selectedIndex:
-//                 AppRoutes.routesIndex[AppRoutes.HospitalsRoute] as int));
-//   }
-// }
 
 class _DoctorBookingSlotState extends State<DoctorBookingSlot> {
   late final HospitalDetailsController controller;
@@ -369,8 +184,8 @@ class _DoctorBookingSlotState extends State<DoctorBookingSlot> {
                             Container(
                               width: 12.08,
                               height: 7.24,
-                              child: Image.asset(
-                                "assets/images/arrow_down.png",
+                              child: SvgPicture.asset(
+                                "assets/images/arrow_down.svg",
                                 fit: BoxFit.cover,
                               ),
                             ),

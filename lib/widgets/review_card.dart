@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/colors.dart';
 
@@ -20,10 +21,11 @@ class ReviewOfPatient extends StatelessWidget {
         children: [
           Row(
             children: List.generate(data["rating"] ?? 1, (index) {
-              return Image.asset(
-                'assets/images/star_icon.png', // Replace with your filled star asset path
+              return SvgPicture.asset(
+                "assets/images/star_icon.svg",
                 width: 24,
                 height: 24,
+                fit: BoxFit.cover,
               );
             }),
           ),
