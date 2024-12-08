@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../controllers/hostpital_detaill_screen.dart';
 import 'home_screen.dart';
@@ -79,22 +80,25 @@ class BottomNavBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         items: [
           _buildBottomNavigationBarItem(
-            icon: Icons.home,
-            label: 'Home',
-            index: 0,
-          ),
+              label: 'Home',
+              index: 0,
+              unSelectedSvg: "assets/images/home_grey.svg",
+              selectedSvg: "assets/images/home_blue.svg"),
           _buildBottomNavigationBarItem(
-            icon: Icons.medical_services_outlined,
+            unSelectedSvg: "assets/images/doctor_grey.svg",
+            selectedSvg: "assets/images/doctor_blue.svg",
             label: 'Doctors',
             index: 1,
           ),
           _buildBottomNavigationBarItem(
-            icon: Icons.local_hospital_outlined,
+            unSelectedSvg: "assets/images/hospital_grey.svg",
+            selectedSvg: "assets/images/hospital_blue.svg",
             label: 'Hospitals',
             index: 2,
           ),
           _buildBottomNavigationBarItem(
-            icon: Icons.person_outline,
+            unSelectedSvg: "assets/images/profile_grey.svg",
+            selectedSvg: "assets/images/profile_blue.svg",
             label: 'Profile',
             index: 3,
           ),
@@ -107,11 +111,11 @@ class BottomNavBar extends StatelessWidget {
     );
   }
 
-  BottomNavigationBarItem _buildBottomNavigationBarItem({
-    required IconData icon,
-    required String label,
-    required int index,
-  }) {
+  BottomNavigationBarItem _buildBottomNavigationBarItem(
+      {required String label,
+      required int index,
+      required String selectedSvg,
+      required String unSelectedSvg}) {
     return BottomNavigationBarItem(
       icon: Stack(
         alignment: Alignment.bottomCenter,
@@ -132,7 +136,7 @@ class BottomNavBar extends StatelessWidget {
                 ),
               ),
             ),
-          Icon(icon),
+          SvgPicture.asset(selectedIndex == index ? selectedSvg : unSelectedSvg)
         ],
       ),
       label: label,
