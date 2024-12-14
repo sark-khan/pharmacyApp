@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:hospital_app/utils/helper_class.dart';
 import '../utils/dio_client.dart';
@@ -125,18 +127,26 @@ class HospitalDetailsController extends GetxController {
     }
   }
 
-  Future<void> createAppointment(Map<String, dynamic> payload) async {
+  Future<String> createAppointment(Map<String, dynamic> payload) async {
     try {
       var token = AuthHelper.getToken() ?? "";
       var options = Options(headers: {'Authorization': "Bearer ${token}"});
 
       var response = await DioClient.dio.post("/patient/appointments/create",
-          data: payload, options: options);
+          data: json.encode(payload), options: options);
+
       if (response.statusCode == 201) {
-        print("offer created");
+        var data = response.data;
+
+        String access_key = data?["data"]?["accessKey"];
+
+        return access_key;
       }
+
+      return "";
     } catch (error) {
       print(error);
+      return "";
     }
   }
 }
