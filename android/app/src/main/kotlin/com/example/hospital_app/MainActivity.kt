@@ -6,7 +6,9 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import com.google.gson.Gson
-import org.json.JSONObject
+import com.easebuzz.sdk.PWECouponsActivity
+import com.easebuzz.sdk.PWEStaticDataModel
+import com.easebuzz.sdk.JsonConverter
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "easebuzz"
