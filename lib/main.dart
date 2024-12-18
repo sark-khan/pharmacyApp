@@ -18,12 +18,13 @@ import './views/doctor_booking_slot.dart';
 import './views/dateCalender.dart';
 import './views/doctor_booking_form.dart';
 import './views/login.dart';
-
+import 'package:flutter/services.dart';
 import './views/login_verification_otp.dart';
 import './utils/auth_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await GetStorage.init();
   final storage = GetStorage();
   final keys = storage.getKeys();
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(
           name: AppRoutes.loginRoute,
-          page: () => LoginScreen(),
+          page: () => const LoginScreen(),
           transition: Transition.noTransition,
         ),
         GetPage(

@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () {
         // Hide dropdown when tapping outside the HeroComponent
-        print(heroKey.currentState?.isDropdownVisible);
+
         if (heroKey.currentState?.isDropdownVisible ?? false) {
           heroKey.currentState?.toggleDropdownVisibility();
         }

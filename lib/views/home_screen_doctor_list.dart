@@ -4,11 +4,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hospital_app/utils/colors.dart';
 import '../controllers/doctors_screen_controller.dart';
-import '../models/doctor.dart';
-import '../widgets/filter_bottom_sheet.dart';
-import '../components/doctorsComponents/search_results.dart';
-import '../widgets/doctor_card.dart';
-import './bottom_navigation_bar.dart';
 import '../utils/routes.dart';
 import '../widgets/homescreen_doctor_card.dart';
 import '../controllers/home_controller.dart';
@@ -27,7 +22,7 @@ class _HomeScreenDoctorListState extends State<HomeScreenDoctorList> {
   @override
   void initState() {
     super.initState();
-
+    print("reachd here in init state of homeScreen");
     ever(homeController.selectedLocation, (location) {
       if (location != null && location.isNotEmpty) {
         controller.requestFetchDoctors(location, selectedDepartment);
@@ -43,7 +38,7 @@ class _HomeScreenDoctorListState extends State<HomeScreenDoctorList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
           // Title and See All button
@@ -89,7 +84,8 @@ class _HomeScreenDoctorListState extends State<HomeScreenDoctorList> {
                     });
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
                     decoration: BoxDecoration(
                       color: selectedDepartment == controller.specialties[index]
                           ? Color.fromRGBO(5, 102, 211, 1)
@@ -126,8 +122,8 @@ class _HomeScreenDoctorListState extends State<HomeScreenDoctorList> {
                 height: 90,
                 margin: EdgeInsets.only(top: 24, bottom: 24),
                 width: double.infinity,
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(16)),
                   color: AppColors.doctorScreenBackgroudColor,
                 ),
@@ -150,11 +146,11 @@ class _HomeScreenDoctorListState extends State<HomeScreenDoctorList> {
                           arguments: {"slug": doctor.hospitalSlug});
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(top: 24),
+                      padding: const EdgeInsets.only(top: 24),
                       child: HomeScreenDoctorCard(doctor: doctor),
                     ),
                   ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
               ],
             );
           })
